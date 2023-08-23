@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>Business Trip Reimbursement</title>
+    <link rel="stylesheet" href="/styles/styles.css">
+</head>
+<body>
+<header>
+    <h2>BUSINESS TRIP REIMBURSEMENT CALCULATION - ADMINISTRATION PANEL</h2>
+</header>
+
+<div class="main-content">
+    <div class="daily-limits">
+        <p>Set daily allowance: <input type="number" id="daily-allowance"></p>
+        <p class="actual-value">Actual value: <span id="actual-daily-allowance"></span></p>
+        <button id="update-allowance-btn">Submit</button>
+
+        <p>Set daily mileage: <input type="number" id="daily-mileage"></p>
+        <p class="actual-value">Actual value: <span id="actual-daily-mileage"></span></p>
+            <button id="update-mileage-btn">Submit</button>
+    </div>
+
+    <div class="add-expense-type">
+        <p>Add new receipt type: <input id="new-expense-type" type="text"></p>
+        <p class="actual-value">Added: <span id="recently-added"></span></p>
+        <button id="add-expense-type-btn">Submit</button>
+    </div>
+
+    <div class="calculation-limits">
+        <div class="type-limit">
+            <p>Set daily limit per receipt type:
+                <span><input id="limit-by-receipt" type="number"></span>
+                <span><select id="receipt-types"></select></span>
+            <p class="actual-value">Actual limit by receipt type: <span id="actual-limit-by-receipt"></span>
+            <p/>
+            </p>
+            <button id="update-limit-per-receipt-btn">Submit</button>
+        </div>
+        <p class="distance-limit">Set max distance limit: <input id="limit-distance" type="number"></p>
+        <p class="actual-value">Actual distance limit: <span id="actual-limit-distance"></span>
+        <p/>
+        <button id="update-distance-limit-btn">Submit</button>
+        <p class="total-limit">Set total limit: <input id="limit-total" type="number"></p>
+        <p class="actual-value">Actual total limit: <span id="actual-limit-total"></span>
+        <p/>
+        <button id="update-total-limit-btn">Submit</button>
+    </div>
+</div>
+<script src="../webapp/admin-script.js" type="text/javascript"></script>
+</body>
+</html>
