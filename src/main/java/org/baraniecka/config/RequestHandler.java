@@ -5,10 +5,7 @@ import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import lombok.extern.slf4j.Slf4j;
-import org.baraniecka.BusinessTrip;
-import org.baraniecka.BusinessTripDto;
-import org.baraniecka.ExpenseService;
-import org.baraniecka.ReceiptType;
+import org.baraniecka.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -25,6 +22,7 @@ public class RequestHandler implements HttpHandler {
         String method = exchange.getRequestMethod();
         String path = exchange.getRequestURI().getPath();
         ExpenseService service = ExpenseService.getInstance();
+        CarUsage carUsage = CarUsage.getINSTANCE();
         BusinessTrip trip = BusinessTrip.getInstance();
         InputStreamReader io = new InputStreamReader(exchange.getRequestBody());
         String request = new BufferedReader(io).readLine();
@@ -126,6 +124,19 @@ public class RequestHandler implements HttpHandler {
                     log.info("{}, {}, request {}", method, path, request);
 
                     String response = String.valueOf(service.calculateTripExpenses());
+                    exchange.sendResponseHeaders(200, response.getBytes().length);
+                    OutputStream os = exchange.getResponseBody();
+                    os.write(response.getBytes());
+
+                    io.close();
+                    os.close();
+
+                    break;
+                }
+                case "/api/reimbursement/business-trip/duration": {
+                    log.info("{}, {}, request {}", method, path, request);
+
+                    String response = String.valueOf(trip.getTripDates());
                     exchange.sendResponseHeaders(200, response.getBytes().length);
                     OutputStream os = exchange.getResponseBody();
                     os.write(response.getBytes());
@@ -249,6 +260,25 @@ public class RequestHandler implements HttpHandler {
                     os.close();
 
                     break;
+                }
+                case "/api/reimbursement/business-trip/mileage": {
+
+                    log.info("{}, {}, request {}", method, path, request);
+
+
+                    double value = Double.parseDouble(request);
+                    carUsage.setDistance(value);
+                    String response = String.valueOf(carUsage.calculateCost());
+
+                    exchange.sendResponseHeaders(200, response.getBytes().length);
+                    OutputStream os = exchange.getResponseBody();
+                    os.write(response.getBytes());
+
+                    io.close();
+                    os.close();
+
+                    break;
+
                 }
             }
         } else {

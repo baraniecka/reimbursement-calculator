@@ -1,20 +1,17 @@
 // VARIABLES
 
-let dateStart = document.getElementById("date-start");
-let tripDuration = document.getElementById("trip-duration");
-let typeList = document.getElementById("receipt-types");
-let newExpenseType = document.getElementById("new-expense-type");
 let limitByReceipt = document.getElementById("limit-by-receipt");
 let tripAllowance = document.getElementById("trip-allowance");
+let carUsage = document.getElementById("mileage-value");
 
 // URLs
 
-const url1 = '/api/reimbursement/business-trip/exclude';
-const url2 = '/api/reimbursement/business-trip/include';
-const url3 = '/api/reimbursement/business-trip/allowance';
-const url4 = '/api/reimbursement/business-trip/duration';
+const url1 = 'http://localhost:8080/api/reimbursement/business-trip/exclude';
+const url2 = 'http://localhost:8080/api/reimbursement/business-trip/include';
+const url3 = 'http://localhost:8080/api/reimbursement/business-trip/allowance';
+const url4 = 'http://localhost:8080/api/reimbursement/business-trip/duration';
 const url5 = 'http://localhost:8080/api/reimbursement/admin/type';
-const url6 = '';
+const url6 = 'http://localhost:8080/api/reimbursement/business-trip/mileage';
 
 // FUNCTIONS
 async function getData(url) {
@@ -56,7 +53,6 @@ function getReceiptTypes() {
     });
 }
 
-// TODO - rozbić na dwie funkcje
 async function setTripDates() {
     try {
         const startDateInput = document.getElementById("date-start");
@@ -64,10 +60,7 @@ async function setTripDates() {
         const durationInput = document.getElementById("trip-duration");
         const duration = durationInput.value;
 
-        const data = {
-            "startDate": startDate,
-            "duration": duration
-        };
+        const data = {"startDate": startDate, "duration": duration};
 
         const response = await fetch(url4, {
                 method: 'POST',
@@ -78,7 +71,7 @@ async function setTripDates() {
                 body: JSON.stringify(data)
             }
         );
-        return response.text();
+        await response.text();
 
     } catch (error) {
         console.error('Error:', error);
@@ -86,27 +79,44 @@ async function setTripDates() {
 }
 
 async function getTripDates() {
-try {
-    const dates = await setTripDates();
-
     const checkboxContainer = document.getElementById("days-excluded");
-    dates.forEach(i => {
+    const data = await getData(url4);
+    data.forEach(i => {
         const checkbox = document.createElement("checkbox");
         checkbox.innerText = i;
         checkbox.value = i;
         checkbox.appendChild(checkboxContainer);
-    });
-}catch(error){
-    console.error(error);
-}
+    })
 }
 
+async function calculateMileage() {
+    try {
+        const mileageInput = document.getElementById("mileage-input");
+        const mileage = mileageInput.value;
+
+        const response = await fetch(url6, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'text/plain',
+                    'Content-Type': 'text/plain'
+                },
+                body: mileage
+            }
+        )
+        carUsage.innerText = await response.text();
+        console.log(response);
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
 
 function initializeApp() {
     let checkboxes = document.querySelectorAll('input[type="checkbox"]');
 
     document.getElementById("get-trip-allowance-btn").addEventListener("click", getTripAllowance);
-    document.getElementById("exclude-days-btn").addEventListener("click", getTripDates);
+    document.getElementById("exclude-days-btn").addEventListener("click", setTripDates);
+    document.getElementById("show-exclude-days-btn").addEventListener("click", getTripDates);
+    document.getElementById("calculate-by-mileage-btn").addEventListener("click", calculateMileage);
     checkboxes.forEach(ch =>
         ch.addEventListener("change", function () {
             if (ch.checked) {

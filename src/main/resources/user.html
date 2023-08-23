@@ -15,6 +15,7 @@
             <p>Number of days <input id="trip-duration" type="number"></p>
             <p><button id="exclude-days-btn">Add days without expenses:</button></p>
             <div class="days-excluded" >
+                <span id="test"><button id="show-exclude-days-btn">Show excluded</button></span>
             </div>
             <button id="get-trip-allowance-btn">Calculate</button>
             <p>Trip allowance value: <span id="trip-allowance"></span></p>
@@ -32,11 +33,9 @@
         </div>
         <div class="mileage">
             <div class="mileage">
-                <div>
-                    <p>Provide mileage in km: <input type="number"></p>
-                    <button>Add mileage</button>
-                    <p>Mileage reimbursement value: <span id="calculate-by-mileage"></span></p>
-                </div>
+                    <p>Provide mileage in km: <input id="mileage-input" type="number"></p>
+                    <button id="calculate-by-mileage-btn">Add mileage</button>
+                    <p>Mileage reimbursement value: <span id="mileage-value"></span></p>
             </div>
         </div>
         <div class="partial-sum">

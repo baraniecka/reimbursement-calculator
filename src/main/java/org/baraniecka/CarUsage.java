@@ -1,29 +1,30 @@
 package org.baraniecka;
 
-public class CarUsage implements Expense{
+public class CarUsage {
 
+    private static CarUsage INSTANCE;
     private double distance;
 
-    @Override
-    public double sum() {
+    private CarUsage() {
+    }
+
+    public static CarUsage getINSTANCE() {
+        if (INSTANCE == null) {
+            return new CarUsage();
+        }
+        return INSTANCE;
+    }
+
+    public double calculateCost() {
         ExpenseService service = ExpenseService.getInstance();
-        if(distance < 0){
+        if (distance < 0) {
             return 0;
         }
         return service.getDailyMileage() * distance;
     }
 
-    @Override
-    public double dailyExpense() {
-        BusinessTrip trip = BusinessTrip.getInstance();
-        return sum()/trip.getActualDays();
-    }
-
-    public double getDistance() {
-        return distance;
-    }
-
-    public void setDistance(double distance) {
+    public double setDistance(double distance) {
         this.distance = distance;
+        return distance;
     }
 }

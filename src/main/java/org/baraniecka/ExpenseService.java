@@ -110,20 +110,11 @@ public class ExpenseService {
         return totalLimit;
     }
 
-    public double calculateTripExpenses(){
+    public double calculateTripExpenses() {
         int days = BusinessTrip.getInstance().getActualDays();
-        if (days == 0){
+        if (days == 0) {
             return 0;
         }
-        return  days * dailyAllowance;
+        return days * dailyAllowance;
     }
-
-    private boolean isOverDailyAllowance(double amount) {
-        return amount > dailyAllowance;
-    }
-
-    private boolean isOverMileage(double amount) {
-        return amount > dailyMileage;
-    }
-
 }
