@@ -194,12 +194,10 @@ function initializeApp() {
 
     let actualDailyAllowance = document.getElementById("actual-daily-allowance");
     let actualDailyMileage = document.getElementById("actual-daily-mileage");
-    let actualLimitByReceipt = document.getElementById("actual-limit-by-receipt")
     let actualDistanceLimit = document.getElementById("actual-limit-distance")
     let actualLimitTotal = document.getElementById("actual-limit-total");
 
-    // Add event listeners to buttons
-    // Admin panel
+
     document.getElementById("update-allowance-btn").addEventListener("click", updateDailyAllowance);
     document.getElementById("update-mileage-btn").addEventListener("click", updateDailyMileage);
     document.getElementById("add-expense-type-btn").addEventListener("click", updateReceiptTypeList);
@@ -207,7 +205,7 @@ function initializeApp() {
     document.getElementById("update-distance-limit-btn").addEventListener("click", updateDistanceLimit);
     document.getElementById("update-total-limit-btn").addEventListener("click", updateTotalLimit);
 
-    // Fetch initial data and update UI
+
     getData(url1).then(data => {
         actualDailyAllowance.innerText = data;
     });

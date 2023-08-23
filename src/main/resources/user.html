@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Business Trip Reimbursement</title>
+</head>
+<body>
+<header>
+    <h2>BUSINESS TRIP REIMBURSEMENT CALCULATION PANEL</h2>
+</header>
+<div class="main-content">
+    <div class="new-reimbursement">
+        <div class="by-date">
+            <p>Trip starting date <input id="date-start" type="date"></p>
+            <p>Number of days <input id="trip-duration" type="number"></p>
+            <p><button id="exclude-days-btn">Add days without expenses:</button></p>
+            <div class="days-excluded" >
+            </div>
+            <button id="get-trip-allowance-btn">Calculate</button>
+            <p>Trip allowance value: <span id="trip-allowance"></span></p>
+        </div>
+        <div class="by-expenses">
+            <p>Calculate business trip allowance</p>
+            <div class="add-new">
+                <div>
+                <p>Select type <select id="type-list"></select></p>
+                <p>Provide amount<input type="number"> </p>
+                <p><button id="create-expense">Create</button></p>
+                <p><button id="add-new-expense">Add new</button></p>
+                </div>
+            </div>
+        </div>
+        <div class="mileage">
+            <div class="mileage">
+                <div>
+                    <p>Provide mileage in km: <input type="number"></p>
+                    <button>Add mileage</button>
+                    <p>Mileage reimbursement value: <span id="calculate-by-mileage"></span></p>
+                </div>
+            </div>
+        </div>
+        <div class="partial-sum">
+            <p>Partial expenses by type:</p>
+            <p>a: {}</p>
+        </div>
+        <div class="total-sum">
+            <p>Total reimbursement value: {}</p>
+            <button type="submit">Create</button>
+        </div>
+    </div>
+</div>
+
+<script src="../webapp/user-script.js" type="text/javascript"></script>
+</body>
+</html>

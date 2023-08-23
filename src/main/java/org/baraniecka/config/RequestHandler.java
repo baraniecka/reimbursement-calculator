@@ -1,9 +1,12 @@
 package org.baraniecka.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import lombok.extern.slf4j.Slf4j;
+import org.baraniecka.BusinessTrip;
+import org.baraniecka.BusinessTripDto;
 import org.baraniecka.ExpenseService;
 import org.baraniecka.ReceiptType;
 
@@ -14,7 +17,7 @@ import java.io.OutputStream;
 import java.util.List;
 
 @Slf4j
-public class AdminRequestHandler implements HttpHandler {
+public class RequestHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         log.info("Hello from admin handler");
@@ -22,16 +25,16 @@ public class AdminRequestHandler implements HttpHandler {
         String method = exchange.getRequestMethod();
         String path = exchange.getRequestURI().getPath();
         ExpenseService service = ExpenseService.getInstance();
+        BusinessTrip trip = BusinessTrip.getInstance();
         InputStreamReader io = new InputStreamReader(exchange.getRequestBody());
         String request = new BufferedReader(io).readLine();
         exchange.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
-
 
         if (method.equals("GET")) {
             switch (path) {
                 case "/api/reimbursement/admin/allowance/daily": {
 
-                    log.info("GET {}, request: {}", path, request);
+                    log.info("{}, {}, request {}", method, path, request);
 
                     String response = String.valueOf(service.getDailyAllowance());
                     exchange.sendResponseHeaders(200, response.getBytes().length);
@@ -44,7 +47,7 @@ public class AdminRequestHandler implements HttpHandler {
                 }
                 case "/api/reimbursement/admin/mileage/daily": {
 
-                    log.info("Hello from GET, request: {}", request);
+                    log.info("{}, {}, request {}", method, path, request);
 
                     String response = String.valueOf(service.getDailyMileage());
                     exchange.sendResponseHeaders(200, response.getBytes().length);
@@ -56,7 +59,7 @@ public class AdminRequestHandler implements HttpHandler {
                     break;
                 }
                 case "/api/reimbursement/admin/limit/distance": {
-                    log.info("Hello from GET, request: {}", request);
+                    log.info("{}, {}, request {}", method, path, request);
 
                     String response = String.valueOf(service.getDistanceLimit());
                     exchange.sendResponseHeaders(200, response.getBytes().length);
@@ -68,7 +71,7 @@ public class AdminRequestHandler implements HttpHandler {
                     break;
                 }
                 case "/api/reimbursement/admin/limit/total": {
-                    log.info("Hello from GET, request: {}", request);
+                    log.info("{}, {}, request {}", method, path, request);
 
                     String response = String.valueOf(service.getTotalLimit());
                     exchange.sendResponseHeaders(200, response.getBytes().length);
@@ -80,7 +83,8 @@ public class AdminRequestHandler implements HttpHandler {
                     break;
                 }
                 case "/api/reimbursement/admin/type": {
-                    log.info("Hello from GET, request: {}", request);
+                    log.info("{}, {}, request {}", method, path, request);
+
                     ObjectMapper mapper = new ObjectMapper();
                     List<ReceiptType> types = service.getExpenseTypes();
                     String response = mapper.writeValueAsString(types);
@@ -93,12 +97,51 @@ public class AdminRequestHandler implements HttpHandler {
                     os.close();
                     break;
                 }
+                case "/api/reimbursement/business-trip/exclude": {
+                    log.info("{}, {}, request {}", method, path, request);
+
+                    trip.exclude();
+                    exchange.sendResponseHeaders(200, -1);
+                    OutputStream os = exchange.getResponseBody();
+                    os.write(-1);
+
+                    io.close();
+                    os.close();
+
+                    break;
+                }
+                case "/api/reimbursement/business-trip/include": {
+                    log.info("{}, {}, request {}", method, path, request);
+
+                    trip.include();
+                    exchange.sendResponseHeaders(200, -1);
+                    OutputStream os = exchange.getResponseBody();
+                    os.write(-1);
+
+                    io.close();
+                    os.close();
+                    break;
+                }
+                case "/api/reimbursement/business-trip/allowance": {
+                    log.info("{}, {}, request {}", method, path, request);
+
+                    String response = String.valueOf(service.calculateTripExpenses());
+                    exchange.sendResponseHeaders(200, response.getBytes().length);
+                    OutputStream os = exchange.getResponseBody();
+                    os.write(response.getBytes());
+
+                    io.close();
+                    os.close();
+
+                    break;
+                }
             }
         } else if (method.equals("POST")) {
             switch (path) {
                 case "/api/reimbursement/admin/allowance/daily": {
 
-                    log.info("Hello from POST, request: {}", request);
+                    log.info("{}, {}, request {}", method, path, request);
+
                     double value = Double.parseDouble(request);
 
                     String response = String.valueOf(service.setDailyAllowance(value));
@@ -113,7 +156,8 @@ public class AdminRequestHandler implements HttpHandler {
                 }
                 case "/api/reimbursement/admin/mileage/daily": {
 
-                    log.info("Hello from POST, request: {}", request);
+                    log.info("{}, {}, request {}", method, path, request);
+
                     double value = Double.parseDouble(request);
 
                     String response = String.valueOf(service.setDailyMileage(value));
@@ -127,7 +171,8 @@ public class AdminRequestHandler implements HttpHandler {
                     break;
                 }
                 case "/api/reimbursement/admin/limit/distance": {
-                    log.info("Hello from POST, request: {}", request);
+                    log.info("{}, {}, request {}", method, path, request);
+
                     double value = Double.parseDouble(request);
 
                     String response = String.valueOf(service.setDistanceLimit(value));
@@ -141,7 +186,8 @@ public class AdminRequestHandler implements HttpHandler {
                     break;
                 }
                 case "/api/reimbursement/admin/limit/total": {
-                    log.info("Hello from POST, request: {}", request);
+                    log.info("{}, {}, request {}", method, path, request);
+
                     double value = Double.parseDouble(request);
 
                     String response = String.valueOf(service.setTotalLimit(value));
@@ -156,7 +202,8 @@ public class AdminRequestHandler implements HttpHandler {
                     break;
                 }
                 case "/api/reimbursement/admin/limit/type": {
-                    log.info("Hello from POST, request: {}", request);
+                    log.info("{}, {}, request {}", method, path, request);
+
                     ObjectMapper mapper = new ObjectMapper();
                     ReceiptType type = mapper.readValue(request, ReceiptType.class);
 
@@ -172,7 +219,7 @@ public class AdminRequestHandler implements HttpHandler {
                 }
 
                 case "/api/reimbursement/admin/type": {
-                    log.info("Hello from POST, request: {}", request);
+                    log.info("{}, {}, request {}", method, path, request);
 
                     String response = String.valueOf(service.addExpenseType(request));
 
@@ -184,11 +231,29 @@ public class AdminRequestHandler implements HttpHandler {
                     os.close();
                     break;
                 }
+                case "/api/reimbursement/business-trip/duration": {
+                    log.info("{}, {}, request {}", method, path, request);
+
+                    ObjectMapper mapper = new ObjectMapper();
+                    mapper.registerModule(new JSR310Module());
+                    BusinessTripDto dto = mapper.readValue(request, BusinessTripDto.class);
+                    BusinessTrip.getInstance().setDuration(dto.getDuration());
+                    BusinessTrip.getInstance().setStartDate(dto.getStartDate());
+
+                    String response = String.valueOf(trip.createTripDates());
+                    exchange.sendResponseHeaders(200, response.getBytes().length);
+                    OutputStream os = exchange.getResponseBody();
+                    os.write(response.getBytes());
+
+                    io.close();
+                    os.close();
+
+                    break;
+                }
             }
         } else {
 
-            log.error("Hello from ELSE, request: {}", request);
-            log.error("Method: {}", method);
+            log.info("{}, {}, request {}", method, path, request);
             log.error("Path: {}", path);
 
             exchange.sendResponseHeaders(400, -1);

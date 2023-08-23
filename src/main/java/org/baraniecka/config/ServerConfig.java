@@ -11,7 +11,7 @@ public class ServerConfig {
 
         HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
 
-        server.createContext("/api/reimbursement", new AdminRequestHandler());
+        server.createContext("/api/reimbursement", new RequestHandler());
         server.setExecutor(Executors.newSingleThreadExecutor());
         server.start();
     }

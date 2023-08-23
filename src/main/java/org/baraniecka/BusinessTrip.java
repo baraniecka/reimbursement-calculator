@@ -9,7 +9,7 @@ public class BusinessTrip {
     private static BusinessTrip INSTANCE;
     private LocalDate startDate;
     private int duration;
-    private List<LocalDate> excluded;
+    private int excluded;
 
     private BusinessTrip() {}
 
@@ -21,18 +21,15 @@ public class BusinessTrip {
     }
 
     public int getActualDays(){
-        if (excluded.isEmpty()){
-            return duration;
-        }
-        return duration - excluded.size();
+        return duration - excluded;
     }
 
-    public void exclude(LocalDate date){
-        excluded.add(date);
+    public void exclude(){
+        excluded++;
     }
 
-    public void include(LocalDate date){
-        excluded.remove(date);
+    public void include(){
+        excluded--;
     }
 
     public List<LocalDate> createTripDates(){
